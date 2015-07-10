@@ -8,6 +8,11 @@ from nltk import PorterStemmer
 wnl = WordNetLemmatizer() # lemmatizer
 st = PorterStemmer()
 
+def postag(s):
+	ws = nltk.word_tokenize(s)
+	ps = nltk.pos_tag(ws)
+	return ps
+
 def read_file(filename):
 	print "reading file"
 	f = open(filename,'r')
