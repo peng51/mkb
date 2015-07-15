@@ -3,10 +3,7 @@ import npc
 
 # starting from a single category
 data = ['John, mayor of New York, said New York is a great city']
-patterns = ['mayor of']
-instances = []
-p_patterns = ['mayor of']
-p_instances = []
+p_patterns = ['2 mayor of']
 
 dt = 'DT'
 prep = 'IN'
@@ -31,6 +28,7 @@ def get_patterns(s, ins):
 	# print "preceding: nouns&adjectives - adjectives/prepositions/determiners"
 	# print "following: verbs - noun phrases/preposition"
 	parts = s.split(ins)
+	patterns = []
 	for i in range(len(parts)):
 		part = parts[i]
 		#print part
@@ -39,14 +37,15 @@ def get_patterns(s, ins):
 		if i < len(parts) - 1:
 			p1 = ext1rule(ptag)
 			p2 = ext2rule(ptag)
-			if len(p1) != 0: p_patterns.append(p1)
-			if len(p2) != 0: p_patterns.append(p2)
+			if len(p1) != 0: patterns.append('1 ' + p1)
+			if len(p2) != 0: patterns.append('2 ' + p2)
 		if i > 0:	
 			p3 = ext3rule(ptag)
-			if len(p3) != 0: p_patterns.append(p3)
+			if len(p3) != 0: patterns.append('3 ' + p3)
 	print "pattens extracted: "
-	for p in p_patterns:
+	for p in patterns:
 		print p
+	return patterns
 
 def ext1rule(ptag):
 	s = []
@@ -147,24 +146,41 @@ def ext3rule(ptag):
 
 def match(s, p): # match a single pattern
 	print "in func: match string with pattern"
+	print p
+	t = p[0]
+	p = p[2:]
+	print t, p
 	if p in s:
 		print "pattern found"
-		x = s.split(p)[1]
-		ps = npc.postag(x)
-		if len(ps) == 0:
-			return ""
-		nps = npc.extNP(ps)
-		if len(nps) == 0:
-			return ""
-		np = nps[0]
-		print "found category instance: " + np
-		p_instances.append([s, np])
-		return np
+		if t == '1' or t == '2':
+			x = s.split(p)[1]
+			ps = npc.postag(x)
+			if len(ps) == 0:
+				return []
+			nps = npc.extNP(ps)
+			if len(nps) == 0:
+				return []
+			np = nps[0]
+			print "found category instance: " + np
+			#p_instances.append([s, np])
+			return [s, np]
+		else:
+			x = s.split(p)[0]
+			ps = npc.postag(x)
+			if len(ps) == 0:
+				return []
+			nps = npc.extNP(ps)
+			if len(nps) == 0:
+				return []
+			np = nps[len(nps) - 1]
+			print "found category instance: " + np
+			return [s, np]
+					
 	else:
-		return ""		
+		return []		
 
 if  __name__ == "__main__":
 	print "in func: main"
 	#print npc.postag("being acquired by Google")
-	#match(data[0], p_patterns[0])
+	match(data[0], p_patterns[0])
 	get_patterns(data[0], "New York")
