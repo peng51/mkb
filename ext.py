@@ -147,12 +147,18 @@ def ext3rule(ptag):
 def match(s, p): # match a single pattern, return the noun phrase
 	print "in func: match string with pattern"
 	print p
-	t = p[0]
-	p = p[2:]
+	t = '0'
+	print p.find('_')
+	if p.find('_') == 0:
+		t = '2'
+		p = p[2:]
+	else:
+		t = '1'
+		p = p[0:-2]
 	print t, p
 	if p in s:
 		print "pattern found"
-		if t == '1' or t == '2':
+		if t == '1':
 			x = s.split(p)[1]
 			ps = npc.postag(x)
 			if len(ps) == 0:
@@ -180,47 +186,47 @@ def match(s, p): # match a single pattern, return the noun phrase
 		return ""		
 
 	
-	def extract_instances(data, ppat):
-		# data structure, instance - category - patterns, dictionary - list of tuples
-		cins = {} # candidate instances
-		for p in ppat:
-			for s in data:
-				cat = p[0] # category
-				pat = p[1] # pattern
-				ins = match(s, pat):
-				if len(ins) != 0:
-					if ins in res:
-						intuple = p[0], p[1], s
-						cins[ins].append(intuple)
-					else:
-						cins[ins] = []
-						intuple = p[0], p[1], s
-						cins[ins].append(intuple)
-		return cins
-
-	def extract_patterns(pins):
-		print "in func: extract_patterns"
-		cpat = {} # candidate instances
-		for ins in pins:
-			ps = get_patterns(ins[2], ins[1])	
-			if len(ps) == 0:
-				continue
-			for p in ps:
-				if p not in ppat:
-					cpat[p] = []
-					newtuple = ins[0], ins[1], ins[2]
-					cpat[p].append(newtuple)
+def extract_instances(data, ppat):
+	# data structure, instance - category - patterns, dictionary - list of tuples
+	cins = {} # candidate instances
+	for p in ppat:
+		for s in data:
+			cat = p[0] # category
+			pat = p[1] # pattern
+			ins = match(s, pat)
+			if len(ins) != 0:
+				if ins in res:
+					intuple = p[0], p[1], s
+					cins[ins].append(intuple)
 				else:
-					newtuple = ins[0], ins[1], ins[2]
-					cpat[p].append(newtuple)
-		return cpat		
+					cins[ins] = []
+					intuple = p[0], p[1], s
+					cins[ins].append(intuple)
+	return cins
 
-	def extract(data, ppat, pins): 
-		# data - the whole dataset; ppat - promoted patterns; pins - promoted instances and associated data
-		# extract candidate instances
-		extract_instances(data, ppat)
-		# extract candidate patterns
-		extract_patterns(pins)
+def extract_patterns(pins):
+	print "in func: extract_patterns"
+	cpat = {} # candidate instances
+	for ins in pins:
+		ps = get_patterns(ins[2], ins[1])	
+		if len(ps) == 0:
+			continue
+		for p in ps:
+			if p not in ppat:
+				cpat[p] = []
+				newtuple = ins[0], ins[1], ins[2]
+				cpat[p].append(newtuple)
+			else:
+				newtuple = ins[0], ins[1], ins[2]
+				cpat[p].append(newtuple)
+	return cpat		
+
+def extract(data, ppat, pins): 
+	# data - the whole dataset; ppat - promoted patterns; pins - promoted instances and associated data
+	# extract candidate instances
+	extract_instances(data, ppat)
+	# extract candidate patterns
+	extract_patterns(pins)
 			
 
 if  __name__ == "__main__":

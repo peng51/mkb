@@ -1,10 +1,9 @@
 # to test the correctness of extraction, filtering, ranking and promoting
 import sys, os
+import ext
 
 # testing categories, PERSON, ANIMAL and LOCATON
-person_patterns = []
-animal_patterns = []
-city_patterns = []
+tpatterns = [] # testingpatterns
 categories = {}
 max_init_num = 50 # the initial number of patterns
 
@@ -43,28 +42,30 @@ def read_some_patterns(filename):
 		labels = line.split('\t')
 		#print line
 		if labels[0] == 'person' and pno < max_init_num:
-			person_patterns.append((labels[0], labels[2]))
+			tpatterns.append((labels[0], labels[2]))
 			pno += 1
-			print line
+			#print line
 		elif labels[0] == 'animal' and ano < max_init_num:
-			animal_patterns.append((labels[0], labels[2]))
+			tpatterns.append((labels[0], labels[2]))
 			ano += 1
-			print line
+			#print line
 		elif labels[0] == 'city' and cno < max_init_num:
-			city_patterns.append((labels[0], labels[2]))
+			tpatterns.append((labels[0], labels[2]))
 			cno += 1
-			print line
-	#print person_patterns
-	#print animal_patterns
-	#print city_patterns		
+			#print line
+	#print tpatterns		
 			
 def test_pattern_matching(tdata): # tdata for testing headlines data
 	print "in func: test_pattern_matching"
-	extracted = []
 	f = open(tdata, 'r')
+	s = f.readlines()[0]
+	#cins = ext.extract_instances(f, tpatterns)
+	print len(tpatterns)
+	for i in range(100):
+		ext.match(s, tpatterns[i][1])
 
 
 if __name__ == '__main__':
 	#read_all_patterns("nellpatterns.csv", "somepatterns.csv")
 	read_some_patterns('somepatterns.csv')
-	#test_pattern_matching('headlines.txt')
+	test_pattern_matching('headlines.txt')
