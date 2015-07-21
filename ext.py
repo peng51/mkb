@@ -37,11 +37,11 @@ def get_patterns(s, ins):
 		if i < len(parts) - 1:
 			p1 = ext1rule(ptag)
 			p2 = ext2rule(ptag)
-			if len(p1) != 0: patterns.append('1 ' + p1)
-			if len(p2) != 0: patterns.append('2 ' + p2)
+			if len(p1) != 0: patterns.append('_ ' + p1)
+			if len(p2) != 0: patterns.append('_ ' + p2)
 		if i > 0:	
 			p3 = ext3rule(ptag)
-			if len(p3) != 0: patterns.append('3 ' + p3)
+			if len(p3) != 0: patterns.append(p3 + ' _')
 	#print "pattens extracted: "
 	#for p in patterns:
 	#	print p
@@ -145,20 +145,20 @@ def ext3rule(ptag):
 	else: return s[:len(s) - 1]
 
 def match(s, p): # match a single pattern, return the noun phrase
-	print "in func: match string with pattern"
-	print p
+	#print "in func: match string with pattern"
+	#print p
 	t = '0'
-	print p.find('_')
+	#print p.find('_')
 	if p.find('_') == 0:
-		t = '2'
+		t = 'h'
 		p = p[2:]
 	else:
-		t = '1'
+		t = 't'
 		p = p[0:-2]
-	print t, p
+	#print t, p
 	if p in s:
-		print "pattern found"
-		if t == '1':
+		#print "pattern found"
+		if t == 't':
 			x = s.split(p)[1]
 			ps = npc.postag(x)
 			if len(ps) == 0:
@@ -167,7 +167,7 @@ def match(s, p): # match a single pattern, return the noun phrase
 			if len(nps) == 0:
 				return ""
 			np = nps[0]
-			print "found category instance: " + np
+			#print "found category instance: " + np
 			#p_instances.append([s, np])
 			return np
 		else:
@@ -179,7 +179,7 @@ def match(s, p): # match a single pattern, return the noun phrase
 			if len(nps) == 0:
 				return ""
 			np = nps[len(nps) - 1]
-			print "found category instance: " + np
+			#print "found category instance: " + np
 			return np
 					
 	else:

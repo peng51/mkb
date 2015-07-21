@@ -59,10 +59,11 @@ def test_pattern_matching(tdata): # tdata for testing headlines data
 	print "in func: test_pattern_matching"
 	f = open(tdata, 'r')
 	s = f.readlines()[0]
-	#cins = ext.extract_instances(f, tpatterns)
-	print len(tpatterns)
-	for i in range(100):
-		ext.match(s, tpatterns[i][1])
+	cins = ext.extract_instances(f, tpatterns)
+	print len(cins)
+	#print len(tpatterns)
+	#for i in range(100):
+	#	ext.match(s, tpatterns[i][1])
 
 
 if __name__ == '__main__':
