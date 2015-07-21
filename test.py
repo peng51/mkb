@@ -5,7 +5,7 @@ import ext
 # testing categories, PERSON, ANIMAL and LOCATON
 tpatterns = [] # testingpatterns
 categories = {}
-max_init_num = 50 # the initial number of patterns
+max_init_num = 5000 # the initial number of patterns
 
 def read_all_patterns(filename, somename):
 	print "in func: read_patterns"
