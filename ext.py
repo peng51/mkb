@@ -20,125 +20,155 @@ def single_extract_candidates(data):
 			match(s, p)
 	# extract patterns
 	for ins in promoted_instances:
-		get_patterns(ins)		
+		get_patterns(ins)
+
+def test():
+	s = "Search and see photos of adoptable pets in the Old Bridge, New Jersey area"
+	print s
+	print npc.postag(s)
+	print get_patterns(s, 'pets')
+
+def extract_patterns(pins):
+	print "in func: extract_patterns"
+	cpat = {} # candidate instances
+	for ins in pins:
+		print ins[2]
+		print npc.postag(ins[2])
+		ps = get_patterns(ins[2], ins[1])	
+		if len(ps) == 0:
+			continue
+		for p in ps:
+			if p not in cpat:
+				cpat[p] = []
+				newtuple = ins[0], ins[1], ins[2]
+				cpat[p].append(newtuple)
+			else:
+				newtuple = ins[0], ins[1], ins[2]
+				cpat[p].append(newtuple)
+	return cpat		
+
+def get_mentions(ps, ip):
+	ms = []
+	i = 0
+	while i < len(ps):
+		if ps[i][0] == ip[0][0]:
+			j = i
+			while j < len(ps) and j - i < len(ip):
+				if ps[j][0] != ip[j - i][0]:
+					break
+				j += 1
+			if j - i == len(ip):
+				ms.append(i)
+				i = j
+			else:
+				i += 1
+		else:
+			i += 1
+	return ms
 
 def get_patterns(s, ins):
 	# preceding patterns empty room, optionally or non-optionally 
 	# print "preceding: [nouns] - verbs - adjectives/prepositions/determiners"
 	# print "preceding: nouns&adjectives - adjectives/prepositions/determiners"
 	# print "following: verbs - noun phrases/preposition"
-	parts = s.split(ins)
+	ps = npc.postag(s)
+	ip = npc.postag(ins)
+	ms = get_mentions(ps, ip)
+	#print len(ms)
 	patterns = []
-	for i in range(len(parts)):
-		part = parts[i]
-		#print part
-		ptag = npc.postag(part)
-		# print ptag
-		if i < len(parts) - 1:
-			p1 = ext1rule(ptag)
-			p2 = ext2rule(ptag)
-			if len(p1) != 0: patterns.append('_ ' + p1)
-			if len(p2) != 0: patterns.append('_ ' + p2)
-		if i > 0:	
-			p3 = ext3rule(ptag)
-			if len(p3) != 0: patterns.append(p3 + ' _')
-	#print "pattens extracted: "
-	#for p in patterns:
-	#	print p
+	p = 0
+	l = len(ps) - 1
+	for i in range(len(ms)):
+		b = ms[i]
+		e = b + len(ip)
+		if i < len(ms) - 1:
+			l = ms[i + 1] - 1
+		else:
+			l = len(ps) - 1
+		p1 = ext1rule(ps, p, b - 1)
+		p2 = ext2rule(ps, p, b - 1)
+		p3 = ext3rule(ps, e, l)
+		if len(p1) != 0: patterns.append(p1 + ' _')
+		if len(p2) != 0: patterns.append(p2 + ' _')
+		if len(p3) != 0: patterns.append('_ ' + p3)
+		# update p and l
+		p = e
+
 	return patterns
 
-def ext1rule(ptag):
+def ext1rule(ps, b, e):
 	s = []
 	x = -1
-	for i in range(len(ptag) - 1, -1, -1):
-		if 'VB' in ptag[i][1]:
-			s.append(ptag[i][0])
+	for i in range(e, b - 1, -1):
+		if 'VB' in ps[i][1]:
+			s.append(ps[i][0])
 			x = i
 			break 
-		elif 'DT' in ptag[i][1] or 'JJ' in ptag[i][1] or 'IN' in ptag[i][1]:
-			s.append(ptag[i][0])
+		elif 'DT' in ps[i][1] or 'JJ' in ps[i][1] or 'IN' in ps[i][1]:
+			s.append(ps[i][0])
 		else:
 			break
 	if x == -1: return ''
-	for i in range(x - 1, -1, -1):
-		if ptag[i][1] == 'NN' or ptag[i][1] == 'NNS':
-			s.append(ptag[i][0])
+	# modify this rule to add noun phrases
+	i = x - 1
+	while i >= b: # the state-machine
+		if 'VB' in ps[i][1]: 
+			s.append(ps[i][0])
+			i -= 1
+		elif ps[i][1] == 'NN' or ps[i][1] == 'NNS':
+			s.append(ps[i][0])
 			break
-		elif 'VB' in ptag[i][1]: 
-			s.append(ptag[i][0])
+		elif 'NNP' in ps[i][1]:
+			j = i
+			while j >= b and 'NNP' in ps[i][1]:
+				s.append(ps[i][0])
+				j -= 1
+			break
 		else:
-			break	
+			break
+
 	if len(s) == 0: return ''
 	else: 
 		t = ''
 		for i in range(len(s) - 1, -1, -1):
 			t += s[i] + ' '
-		return t[:len(t) - 1]
-	#x = -1
-	#for i in range(len(ptag)):
-	#	#print ptag[i][0], ptag[i][1]
-	#	if 'VB' in ptag[i][1]:
-	#		x = i
-	#		break
-	#if x == -1: return ''
-	#s = ''
-	#if x > 0 and (ptag[x - 1][1] == 'NN' or ptag[x - 1][1] == 'NNS'):
-	#		s += ptag[x - 1][0] + " "
-	#s += ptag[x][0] + " "
-	#for i in range(x + 1, len(ptag)):
-	#	if 'VB' in ptag[i][1] or 'DT' in ptag[i][1] or 'JJ' in ptag[i][1] or 'IN' in ptag[i][1]:
-	#		s += ptag[i][0] + " "
-	#	else:
-	#		#return ""
-	#		break
-	#if len(s) == 0: return s
-	#else: return s[:len(s) - 1]			 		
+		return t[:len(t) - 1]			 		
 
-def ext2rule(ptag):
+def ext2rule(ps, b, e):
 	s = []
-	for i in range(len(ptag) - 1, -1, -1):
-		if 'VB' in ptag[i][1]:
-			return ''
-		elif ptag[i][1] == 'NN' or ptag[i][1] == "NNS":
-			s.append(ptag[i][0])
+	i = e - 1
+	while i >= b: # the state-machine
+		if 'VB' in ps[i][1]: 
 			break
-		elif 'DT' in ptag[i][1] or 'JJ' in ptag[i][1] or 'IN' in ptag[i][1]:
-			s.append(ptag[i][0])
+		elif 'DT' in ps[i][1] or 'JJ' in ps[i][1] or 'IN' in ps[i][1]:
+			s.append(ps[i][0])
+			i -= 1
+		elif ps[i][1] == 'NN' or ps[i][1] == 'NNS':
+			s.append(ps[i][0])
+			break
+		elif 'NNP' in ps[i][1]:
+			j = i
+			while j >= b and 'NNP' in ps[i][1]:
+				s.append(ps[i][0])
+				j -= 1
+			break
 		else:
 			break
+	#print s
 	if len(s) == 0: return ''
 	else: 
 		t = ''
 		for i in range(len(s) - 1, -1, -1):
 			t += s[i] + ' '
 		return t[:len(t) - 1]
-	#x = -1
-	#for i in range(len(ptag)):
-	#	#print ptag[i][0], ptag[i][1]
-	#	if 'VB' in ptag[i][1]:
-	#		return ""
-	#	if ptag[i][1] == 'NN' or ptag[i][1] == "NNS":
-	#		x = i
-	#		break
-	#if x == -1: return ''
-	#s = ptag[x][0] + " "
-	#for i in range(x + 1, len(ptag)):
-	#	if 'DT' in ptag[i][1] or 'JJ' in ptag[i][1] or 'IN' in ptag[i][1]:
-	#		s += ptag[i][0] + " "
-	#	else:
-			#return ""
-	#		break
-	#if len(s) == 0: return s
-	#else: return s[:len(s) - 1]	
-	
 
-def ext3rule(ptag):
+def ext3rule(ps, b, e):
 	s = ''
-	for i in range(len(ptag)):
-		if ('VB' in ptag[i][1]):
-			s += ptag[i][0] + " "
-		elif len(s) != 0 and ptag[i][1] == 'IN':
-			s += ptag[i][0] + " "
+	for i in range(b, e + 1):
+		if ('VB' in ps[i][1]):
+			s += ps[i][0] + " "
+		elif len(s) != 0 and (ps[i][1] == 'IN' or 'NN' in ps[i][1] or 'NNP' in ps[i][1]):
+			s += ps[i][0] + " "
 		else:
 			break
 	if len(s) == 0: return s
@@ -146,6 +176,7 @@ def ext3rule(ptag):
 
 def match(s, p): # match a single pattern, return the noun phrase
 	#print "in func: match string with pattern"
+	#TODO: for future improvement, using getMentions instead
 	t = '0'
 	if p.find('_') == 0:
 		t = 'h'
@@ -179,14 +210,14 @@ def extract_instances(data, ppat):
 	#print len(data)
 	no = 0
 	for s in data:
-		s = unicode(s, errors="ignore") # encode the string as unicode to deal with outliers
+		s = unicode(s[:-1], errors="ignore") # encode the string as unicode to deal with outliers
 		for p in ppat:
 			#up = unicode(p, errors="ignore")
 			cat = p[0] # category
 			pat = unicode(p[1], errors="ignore") # pattern
 			ins = match(s, pat)
 			if len(ins) != 0:
-				print ins, p[0], p[1], s 
+				print ins + ': ' + p[0] + ', ' + p[1] + '\t' + s 
 				if ins in cins:
 					intuple = p[0], p[1], s
 					cins[ins].append(intuple)
@@ -199,22 +230,7 @@ def extract_instances(data, ppat):
 			print no, 'lines processed'
 	return cins
 
-def extract_patterns(pins):
-	print "in func: extract_patterns"
-	cpat = {} # candidate instances
-	for ins in pins:
-		ps = get_patterns(ins[2], ins[1])	
-		if len(ps) == 0:
-			continue
-		for p in ps:
-			if p not in ppat:
-				cpat[p] = []
-				newtuple = ins[0], ins[1], ins[2]
-				cpat[p].append(newtuple)
-			else:
-				newtuple = ins[0], ins[1], ins[2]
-				cpat[p].append(newtuple)
-	return cpat		
+		
 
 def extract(data, ppat, pins): 
 	# data - the whole dataset; ppat - promoted patterns; pins - promoted instances and associated data
@@ -226,6 +242,7 @@ def extract(data, ppat, pins):
 
 if  __name__ == "__main__":
 	print "in func: main"
+	test()
 	#print npc.postag("being acquired by Google")
-	match(data[0], p_patterns[0])
-	get_patterns(data[0], "New York")
+	#match(data[0], p_patterns[0])
+	#get_patterns(data[0], "New York")

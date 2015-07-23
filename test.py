@@ -9,7 +9,6 @@ categories = {}
 max_init_num = 5000 # the initial number of patterns
 
 #TODO: promoted patterns add confidence attribute
-#TODO: recheck if CPL requires no other words between pattern and NP
 #TODO: recheck if new candidate patterns are required to extract only from promoted instances sentences or all possible sentences
 
 def read_all_patterns(filename, somename):
@@ -68,7 +67,25 @@ def test_pattern_matching(tdata): # tdata for testing headlines data
 	cins = ext.extract_instances(data, tpatterns)
 	print len(cins)
 
-if __name__ == '__main__':
-	#read_all_patterns("nellpatterns.csv", "somepatterns.csv")
+def test_extract_instances():
 	read_some_patterns('somepatterns.csv')
 	test_pattern_matching('headlines.txt')
+
+def test_extract_patterns():
+	print "in func: test_extract_patterns"
+	pins = []
+	f = open('seeds-ins.txt', 'r')
+	for line in f:
+		cs = line[:-1].split('\t')
+		tup = cs[0], cs[1], cs[2]
+		pins.append(tup)
+	cpat = ext.extract_patterns(pins)
+	print len(cpat)
+	#for x in cpat:
+		#print x, '\t', cpat[x]
+
+
+if __name__ == '__main__':
+	#read_all_patterns("nellpatterns.csv", "somepatterns.csv")
+	#test_extract_instances()
+	test_extract_patterns()
