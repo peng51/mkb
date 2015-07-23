@@ -55,3 +55,38 @@ def extNP(ps): # extract NP
 			i += 1
 	return nps	
 
+def extFirstNP(ps):
+	np = ""
+	i = 0
+	while i < len(ps):
+		x = ps[i]
+		if x[1] == 'NN' or x[1] == 'NNS':
+			#y = wnl.lemmatize(x[0])
+			#nps.append(y)
+			np = x[0]
+			break
+		elif x[1] == 'NNP' or x[1] == 'NNPS':	
+			while i < len(ps) and (ps[i][1] == 'NNP' or ps[i][1] == 'NNPS'):
+				#np += wnl.lemmatize(ps[i][0]) + " "
+				np += ps[i][0] + " "
+				i += 1
+		else:
+			break
+	return np	
+
+def extLastNP(ps):
+	np = ""
+	i = len(ps) - 1
+	while i >= 0:
+		x = ps[i]
+		if x[1] == 'NN' or x[1] == 'NNS':
+			np = x[0]
+			break
+		elif x[1] == 'NNP' or x[1] == 'NNPS':	
+			while i >= 0 and (ps[i][1] == 'NNP' or ps[i][1] == 'NNPS'):
+				#np += wnl.lemmatize(ps[i][0]) + " "
+				np = (ps[i][0] + " ").join(np)
+				i -= 1
+		else:
+			break
+	return np

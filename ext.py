@@ -146,10 +146,7 @@ def ext3rule(ptag):
 
 def match(s, p): # match a single pattern, return the noun phrase
 	#print "in func: match string with pattern"
-	#print s 
-	#print p
 	t = '0'
-	#print p.find('_')
 	if p.find('_') == 0:
 		t = 'h'
 		p = ' ' + p[2:] + ' '
@@ -164,25 +161,13 @@ def match(s, p): # match a single pattern, return the noun phrase
 			ps = npc.postag(x)
 			if len(ps) == 0:
 				return ""
-			nps = npc.extNP(ps)
-			if len(nps) == 0:
-				return ""
-			np = nps[0]
-			#print "found category instance: " + np
-			#p_instances.append([s, np])
+			np = npc.extFirstNP(ps)
 			return np
 		else:
 			x = s.split(p)[0]
 			ps = npc.postag(x)
-			if len(ps) == 0:
-				return ""
-			nps = npc.extNP(ps)
-			if len(nps) == 0:
-				return ""
-			np = nps[len(nps) - 1]
-			#print "found category instance: " + np
-			return np
-					
+			np = npc.extLastNP(ps)
+			return np				
 	else:
 		return ""		
 
@@ -201,7 +186,7 @@ def extract_instances(data, ppat):
 			pat = unicode(p[1], errors="ignore") # pattern
 			ins = match(s, pat)
 			if len(ins) != 0:
-				print "found one match: ", s, p, ins
+				print ins, p[0], p[1], s 
 				if ins in cins:
 					intuple = p[0], p[1], s
 					cins[ins].append(intuple)

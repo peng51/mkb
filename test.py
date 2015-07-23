@@ -1,6 +1,7 @@
 # to test the correctness of extraction, filtering, ranking and promoting
 import sys, os
 import ext
+import npc
 
 # testing categories, PERSON, ANIMAL and LOCATON
 tpatterns = [] # testingpatterns
