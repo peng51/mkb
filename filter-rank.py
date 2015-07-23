@@ -6,7 +6,7 @@ num_instances = 100 # the number of instances to be promoted
 # candidate pattern format
 # {'2 mayor of': [('City', 'New York', 'sentence ...')]}
 # promoted pattern format
-# [('City', 2 mayor of')]
+# [('City', 2 mayor of', confidence)]
 # candidate instance format
 # {'New York': [('City', '2 mayor of', 'sentence ...')]}
 # promoted instance format

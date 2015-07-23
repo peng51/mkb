@@ -27,8 +27,8 @@ def extract(docs):# extract named entities and noun phrases
 		# tokenization, pos tagging, named entity extraction
 		ws = nltk.word_tokenize(s)
 		ps = nltk.pos_tag(ws)
-		ns = nltk.ne_chunk(ps)
-		ns = nltk.ne_chunk(ps, binary=True)
+		#ns = nltk.ne_chunk(ps)
+		#ns = nltk.ne_chunk(ps, binary=True)
 		# extract noun phrases and entities
 		nps = extNP(ps)
 		return nps
@@ -39,15 +39,15 @@ def extNP(ps): # extract NP
 	while i < len(ps):
 		x = ps[i]
 		if x[1] == 'NN' or x[1] == 'NNS':
-			y = wnl.lemmatize(x[0])
-			nps.append(y)
-			#nps.append(x[0])
+			#y = wnl.lemmatize(x[0])
+			#nps.append(y)
+			nps.append(x[0])
 			i += 1
 		elif x[1] == 'NNP' or x[1] == 'NNPS':	
 			np = ''
 			while i < len(ps) and (ps[i][1] == 'NNP' or ps[i][1] == 'NNPS'):
-				np += wnl.lemmatize(ps[i][0]) + " "
-				#np += ps[i][0] + " "
+				#np += wnl.lemmatize(ps[i][0]) + " "
+				np += ps[i][0] + " "
 				i += 1
 			nps.append(np[:len(np) - 1])
 

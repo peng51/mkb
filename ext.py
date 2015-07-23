@@ -146,15 +146,16 @@ def ext3rule(ptag):
 
 def match(s, p): # match a single pattern, return the noun phrase
 	#print "in func: match string with pattern"
+	#print s 
 	#print p
 	t = '0'
 	#print p.find('_')
 	if p.find('_') == 0:
 		t = 'h'
-		p = p[2:]
+		p = ' ' + p[2:] + ' '
 	else:
 		t = 't'
-		p = p[0:-2]
+		p = ' ' + p[0:-2] + ' '
 	#print t, p
 	if p in s:
 		#print "pattern found"
@@ -188,20 +189,29 @@ def match(s, p): # match a single pattern, return the noun phrase
 	
 def extract_instances(data, ppat):
 	# data structure, instance - category - patterns, dictionary - list of tuples
+	print "in func: extract_instances"
 	cins = {} # candidate instances
-	for p in ppat:
-		for s in data:
+	#print len(data)
+	no = 0
+	for s in data:
+		s = unicode(s, errors="ignore") # encode the string as unicode to deal with outliers
+		for p in ppat:
+			#up = unicode(p, errors="ignore")
 			cat = p[0] # category
-			pat = p[1] # pattern
+			pat = unicode(p[1], errors="ignore") # pattern
 			ins = match(s, pat)
 			if len(ins) != 0:
-				if ins in res:
+				print "found one match: ", s, p, ins
+				if ins in cins:
 					intuple = p[0], p[1], s
 					cins[ins].append(intuple)
 				else:
 					cins[ins] = []
 					intuple = p[0], p[1], s
 					cins[ins].append(intuple)
+		no += 1
+		if no % 10000 == 0:
+			print no, 'lines processed'
 	return cins
 
 def extract_patterns(pins):
