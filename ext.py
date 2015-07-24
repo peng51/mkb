@@ -23,17 +23,18 @@ def single_extract_candidates(data):
 		get_patterns(ins)
 
 def test():
-	s = "Search and see photos of adoptable pets in the Old Bridge, New Jersey area"
-	print s
-	print npc.postag(s)
-	print get_patterns(s, 'pets')
+	#s = "New mayor of Westhoughton's special way to celebrate a special year"
+	#print s
+	#print npc.postag(s)
+	#print get_patterns(s, 'Westhoughton')
+	print match('Best Western Hotel Merian am Rhein Accommodation', '_ am Rhein')		
 
 def extract_patterns(pins):
 	print "in func: extract_patterns"
 	cpat = {} # candidate instances
 	for ins in pins:
-		print ins[2]
-		print npc.postag(ins[2])
+		#print ins[2]
+		#print npc.postag(ins[2])
 		ps = get_patterns(ins[2], ins[1])	
 		if len(ps) == 0:
 			continue
@@ -78,6 +79,7 @@ def get_patterns(s, ins):
 	patterns = []
 	p = 0
 	l = len(ps) - 1
+	#print len(ms)
 	for i in range(len(ms)):
 		b = ms[i]
 		e = b + len(ip)
@@ -88,9 +90,15 @@ def get_patterns(s, ins):
 		p1 = ext1rule(ps, p, b - 1)
 		p2 = ext2rule(ps, p, b - 1)
 		p3 = ext3rule(ps, e, l)
-		if len(p1) != 0: patterns.append(p1 + ' _')
-		if len(p2) != 0: patterns.append(p2 + ' _')
-		if len(p3) != 0: patterns.append('_ ' + p3)
+		if len(p1) != 0: 
+			patterns.append(p1 + ' _')
+			#print "p1", p1
+		if len(p2) != 0: 
+			patterns.append(p2 + ' _')
+			#print "p2", p2
+		if len(p3) != 0: 
+			patterns.append('_ ' + p3)
+			#print "p3", p3
 		# update p and l
 		p = e
 
@@ -120,8 +128,8 @@ def ext1rule(ps, b, e):
 			break
 		elif 'NNP' in ps[i][1]:
 			j = i
-			while j >= b and 'NNP' in ps[i][1]:
-				s.append(ps[i][0])
+			while j >= b and 'NNP' in ps[j][1]:
+				s.append(ps[j][0])
 				j -= 1
 			break
 		else:
@@ -136,7 +144,8 @@ def ext1rule(ps, b, e):
 
 def ext2rule(ps, b, e):
 	s = []
-	i = e - 1
+	i = e
+	foundN = False
 	while i >= b: # the state-machine
 		if 'VB' in ps[i][1]: 
 			break
@@ -145,17 +154,19 @@ def ext2rule(ps, b, e):
 			i -= 1
 		elif ps[i][1] == 'NN' or ps[i][1] == 'NNS':
 			s.append(ps[i][0])
+			foundN = True
 			break
 		elif 'NNP' in ps[i][1]:
+			foundN = True
 			j = i
-			while j >= b and 'NNP' in ps[i][1]:
-				s.append(ps[i][0])
+			while j >= b and 'NNP' in ps[j][1]:
+				s.append(ps[j][0])
 				j -= 1
 			break
 		else:
 			break
 	#print s
-	if len(s) == 0: return ''
+	if len(s) == 0 or not foundN: return ''
 	else: 
 		t = ''
 		for i in range(len(s) - 1, -1, -1):
@@ -167,8 +178,17 @@ def ext3rule(ps, b, e):
 	for i in range(b, e + 1):
 		if ('VB' in ps[i][1]):
 			s += ps[i][0] + " "
-		elif len(s) != 0 and (ps[i][1] == 'IN' or 'NN' in ps[i][1] or 'NNP' in ps[i][1]):
+		elif len(s) != 0 and ps[i][1] == 'IN':
 			s += ps[i][0] + " "
+		elif len(s) != 0 and 'NN' in ps[i][1]:
+			s += ps[i][0] + " "
+			break
+		elif len(s) != 0 and 'NNP' in ps[i][1]:
+			j = i
+			while j <= e and 'NNP' in ps[j][1]:
+				s += ps[j][0] + " "
+				j += 1
+			break
 		else:
 			break
 	if len(s) == 0: return s
@@ -190,8 +210,6 @@ def match(s, p): # match a single pattern, return the noun phrase
 		if t == 't':
 			x = s.split(p)[1]
 			ps = npc.postag(x)
-			if len(ps) == 0:
-				return ""
 			np = npc.extFirstNP(ps)
 			return np
 		else:
@@ -217,7 +235,7 @@ def extract_instances(data, ppat):
 			pat = unicode(p[1], errors="ignore") # pattern
 			ins = match(s, pat)
 			if len(ins) != 0:
-				print ins + ': ' + p[0] + ', ' + p[1] + '\t' + s 
+				print ins + '\t' + p[0] + ', ' + p[1] + '\t' + s 
 				if ins in cins:
 					intuple = p[0], p[1], s
 					cins[ins].append(intuple)

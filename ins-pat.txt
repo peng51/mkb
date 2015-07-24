@@ -1,0 +1,46 @@
+Actress	person, _ attends the premiere	Actress Judi Dench attends the premiere for the film 'Philomena' at the Venice Film Festival
+Alpharetta 	city, Project Manager Salaries in _	McKesson Senior Project Manager Salaries in Alpharetta, GA
+pets	animal, photos of adoptable _	Search and see photos of adoptable pets in the Old Bridge, New Jersey area
+Walter Reed National Military Medical Center 	person, Work At _	Janitors Protest After Not Getting Paid For Their Work At Walter Reed National Military Medical Center
+driver	animal, _ found shot in	Cab driver found shot in Asbury Park
+Kuala Lumpur 	city, Flights from _	Daily Flights from Kuala Lumpur to Kolkata starting 25 March 2013!
+Camerota 	city, Marina di _	Hotel America Hotell, Marina di Camerota
+Saginaw 	city, buildings in downtown _	Historic block of buildings in downtown Saginaw slated for possible demolition
+Brooklyn Park 	city, mayor of _	Jeffrey Lunde elected mayor of Brooklyn Park
+town	city, mayor of _	Honorary cat mayor of Alaska town grabs hearts globally
+Venezia 	city, Carnevale di _	Il Carnevale di Venezia (Rossini, Gioacchino)
+Savannah 	animal, Taming of _	The Taming of Savannah
+pastor	person, _ cooked meals	Asbury Park pastor cooked meals for others when power went out
+bears	animal, baby polar _	Watch these twin baby polar bears cuddle with their mom
+Nairobi 	city, Flights from _	Etihad Airways Flights from Nairobi
+Beijing 	city, train from _	Travel the legendary Trans-Siberian train from Beijing and have wonderful stops in Ulaanbaatar Mongolia, Lake Baikal on the way to Moscow-the city of the Tsars.
+North Central USA 	city, Flights from _	Cheap Flights from North Central USA to Asturias
+Preparedness	city, Terms of _	Is PPD-8 Re-Creating the Wheel in Terms of Preparedness Policy?
+Horses	animal, Tennessee Walking _	Found 29 Tennessee Walking Horses for Sale
+Padova 	city, Provincia di _	Blue Dream Hotel, Monselice, Provincia di Padova
+Novak Djokovic 	person, Andy Murray beats _	After 77 years the wait is over for a men's Wimbledon champion as Andy Murray beats Novak Djokovic
+Novak Djokovic 	person, Murray beats _	After 77 years the wait is over for a men's Wimbledon champion as Andy Murray beats Novak Djokovic
+Westhoughton 	city, mayor of _	New mayor of Westhoughton's special way to celebrate a special year
+Bibbona 	city, Marina di _	I Gigli di Mare Guest house, Marina di Bibbona, Italy - Tuscany
+Home	person, Work At _	Weekly Work At Home Recap 11-12-2010
+
+McKesson Senior Project Manager Salaries in _
+Asbury Park _
+Tennessee Walking _
+_ attends
+Flights from _
+Actress _
+photos of adoptable _
+_ cuddle with
+downtown _
+mayor of _
+Baby _
+Etihad Airways Flights from _
+Taming of _
+_ cooked meals
+_ discovered nesting in Bay
+di _
+beats _
+train from _
+polar _
+_ slated for

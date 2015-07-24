@@ -81,11 +81,11 @@ def test_extract_patterns():
 		pins.append(tup)
 	cpat = ext.extract_patterns(pins)
 	print len(cpat)
-	#for x in cpat:
-		#print x, '\t', cpat[x]
+	for x in cpat:
+		print x
 
 
 if __name__ == '__main__':
 	#read_all_patterns("nellpatterns.csv", "somepatterns.csv")
-	#test_extract_instances()
-	test_extract_patterns()
+	test_extract_instances()
+	#test_extract_patterns()
