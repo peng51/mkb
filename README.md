@@ -1,4 +1,9 @@
-# kbme
-knowledge base multimodal extraction
+# mkb: Multimodal Knowledge Base
+
+multimodal extraction
 - text: Coupled Pattern Learner in cpl/
-- image: 
+- image: N.A.
+
+On-the-fly Learning System
+- demo: in demo/ folder
+ 
