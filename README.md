@@ -5,5 +5,5 @@ multimodal extraction
 - image: N.A.
 
 On-the-fly Learning System
-- demo: in demo/ folder
- 
+- multimodal WSD demo: in demo/ folder
+- main code: otf/ folder 
