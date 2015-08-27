@@ -55,7 +55,8 @@ def download_images(doc, path):
 	l = soup.find_all('a', {'class':'rg_l'})
 	for x in l:
 		print x['href']
-
+		#TODO download images and titles, and other meta data if possible
+		
 
 if __name__ == '__main__':  
 	download('apple')
