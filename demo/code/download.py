@@ -2,7 +2,6 @@ import sys
 import urllib2
 from urllib2 import urlopen
 from cookielib import CookieJar
-import mechanize
 from bs4 import BeautifulSoup
 
 num = 100
@@ -23,7 +22,7 @@ def download(word): # download documents for a keyword
 	for s in senses:
 		print s
 		doc = get_doc(prefix + s.replace(' ', '+'))
-		download_images(doc, img_folder + '/' + word + '/' + s)
+		download_mdocs(doc, img_folder + '/')
 
 def parse_senses(word):
 	print 'in func: parse_senses'
@@ -49,14 +48,27 @@ def get_doc(url):
 	print url
 	return opener.open(url).read()
 
-def download_images(doc, path):
-	print 'in func: get_images'
+def download_mdocs(doc, path):
+	print 'in func: download_mdocs'
 	soup = BeautifulSoup(doc)
-	l = soup.find_all('a', {'class':'rg_l'})
+	l = soup.find_all('div', {'class':'rg_di rg_el ivg-i'})
+	no = 0
 	for x in l:
-		print x['href']
-		#TODO download images and titles, and other meta data if possible
-		
+		#print x['href']
+		#print x
+		imgurl = x.find('a', {'class': 'rg_l'})['href'].split('imgurl=')[1].split('&')[0]
+		txt = x.find('div', {'class': 'rg_meta'}).text.split("\"pt\":\"")[1].split("\"")[0]
+		#try:
+		#	urllib.urlretrieve(imgurls[i], folder + '/' + str(an) + '.jpg')
+		#	out.write(str(an) + '.jpg  ---  ' + titles[i] + "  ---  " + imgurls[i] + '\n')
+		#	an += 1
+		#except:
+		#	print 'this link ' + imgurls[i] + ' is corrupted or forbidden access'
+
+		#print txt
+		#NOTE pattern matching and label parsing, which is faster?
+		no += 1
+	print no
 
 if __name__ == '__main__':  
 	download('apple')
