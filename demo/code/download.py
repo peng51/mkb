@@ -39,10 +39,6 @@ def parse_senses(word):
 		senses.append(x['data-query'])
 	return senses
 
-def get_urls():
-	print 'in func: get_urls'
-
-
 def get_doc(url):
 	print 'in func: get_doc'	
 	print url
